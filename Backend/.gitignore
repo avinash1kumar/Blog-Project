@@ -1,0 +1,21 @@
+.env
+text.py
+__pycache__
+
+# Secrets and local environment
+.env
+.env.*
+!.env.example
+
+# Logs and temporary files
+*.log
+tmp/
+temp/
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+notes.tldr

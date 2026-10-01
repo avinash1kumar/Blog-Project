@@ -45,8 +45,8 @@ def create_access_token(data: dict):
     to_encode = data.copy()
     
     # * create expiration time for token
-    expire = datetime.now(timezone.utc)+timedelta(minutes=30)
-    
+    expire = datetime.now(timezone.utc)+timedelta(minutes=60)
+    print("exp time is:", expire)
     to_encode.update({
         "exp": expire
     })

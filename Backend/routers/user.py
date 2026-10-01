@@ -4,6 +4,7 @@ from model.posts import Post
 from schema.signup_user import UserSignUp
 from schema.login_user import LoginUser
 from schema.update_user import UserUpdate
+from response_schema.user_routes_schemas import UpdatedSignUpUserModel, LoginUserModel, UpdatedUserProfileModel, UserProfileUpdateModel, UserProfileDeleteModel
 from sqlmodel import Session, select, or_
 from db import get_session
 from datetime import datetime, timedelta, timezone
@@ -12,7 +13,7 @@ from utils.security import hash_password, verify_password, create_access_token, 
 router = APIRouter(prefix="/auth", tags=["User Authentication"])
 
 # ! signup api endpoint
-@router.post("/signup")
+@router.post("/signup", response_model=UpdatedSignUpUserModel)
 def signup(
     user: UserSignUp,
     session: Session = Depends(get_session)
@@ -63,7 +64,7 @@ def signup(
 
 
 # ! login endpoint
-@router.post("/login")
+@router.post("/login", response_model=LoginUserModel)
 def login(
     user: LoginUser,
     session: Session = Depends(get_session)
@@ -97,7 +98,7 @@ def login(
     
 
 # ! get current login user
-@router.get("/profile")
+@router.get("/profile", response_model=UpdatedUserProfileModel)
 def profile(
     current_user: User = Depends(get_user)
 ):
@@ -122,7 +123,7 @@ def profile(
     
 
 # ! update user details
-@router.patch("/profile")
+@router.patch("/profile", response_model=UserProfileUpdateModel)
 def update_profile(
     data: UserUpdate,
     current_user: User = Depends(get_user),
@@ -194,7 +195,7 @@ def update_profile(
 
 
 # ! delete user
-@router.delete("/profile")
+@router.delete("/profile", response_model=UserProfileDeleteModel)
 def delete_profile(
     current_user: User = Depends(get_user),
     session: Session = Depends(get_session)
@@ -212,72 +213,3 @@ def delete_profile(
     }
     
     
-    
-# @router.put("/update_profile")
-# def update_profile(
-#     data: UserUpdate,
-#     current_user: User = Depends(get_user),
-#     session: Session = Depends(get_session)
-# ):
-
-#     # ? Check username only if user is trying to change it
-#     if data.username is not None:
-
-#         statement = select(User).where(
-#             User.username == data.username,
-#             User.id != current_user.id
-#         )
-
-#         existing_user = session.exec(statement).first()
-
-#         if existing_user:
-#             raise HTTPException(
-#                 status_code=400,
-#                 detail="Username already exists"
-#             )
-
-#         current_user.username = data.username
-
-
-#     # ? Update name
-#     if data.name is not None:
-#         current_user.name = data.name
-
-
-#     # ? Check email only if user is trying to change it
-#     if data.email is not None:
-
-#         statement = select(User).where(
-#             User.email == data.email,
-#             User.id != current_user.id
-#         )
-
-#         existing_user = session.exec(statement).first()
-
-#         if existing_user:
-#             raise HTTPException(
-#                 status_code=400,
-#                 detail="Email already exists"
-#             )
-
-#         current_user.email = data.email
-
-
-#     # ? Update password
-#     if data.password is not None:
-#         current_user.password = hash_password(data.password)
-
-
-#     session.commit()
-#     session.refresh(current_user)
-
-
-#     return {
-#         "message": "Profile updated successfully",
-#         "user": {
-#             "id": current_user.id,
-#             "username": current_user.username,
-#             "name": current_user.name,
-#             "email": current_user.email
-#         }
-#     }

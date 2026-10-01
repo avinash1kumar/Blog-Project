@@ -4,16 +4,17 @@ from model.user import User
 from model.posts import Post
 from schema.post_data import PostData
 from schema.update_post import UpdatePost
+from response_schema.post_routes_schemas import PostDataResponse, GetMethodResponse, UpdatePostResponse, DeletePostResponse
 from db import get_session
 from utils.security import get_user
 
 router = APIRouter(prefix="/posts", tags=["Posts"])
 
 
-@router.post("")
+@router.post("", response_model=PostDataResponse)
 def write_blog(
     post: PostData,
-    current_user: User = Depends(get_user),  # current_user me user ka sara details aa jayega. get_user user return kr rah hai
+    current_user: User = Depends(get_user),
     session: Session = Depends(get_session) 
 ):
     
@@ -33,7 +34,7 @@ def write_blog(
     }
     
 
-@router.get("")
+@router.get("", response_model=list[GetMethodResponse])
 def get_all_posts(
     current_user: User = Depends(get_user),
     session: Session = Depends(get_session)
@@ -50,6 +51,7 @@ def get_all_posts(
     result = session.exec(statement).all()
     
     return [
+        # This response is list type so i use list[in response schema]
         {
             "author": row.author,
             "title": row.title,
@@ -60,26 +62,40 @@ def get_all_posts(
     
 
 # ! get post by postnumber { post_id }
-@router.get("/{post_id}")
+@router.get("/{post_id}", response_model=GetMethodResponse)
 def single_post(
     post_id:int,
     current_user: User = Depends(get_user),
     session: Session = Depends(get_session)
 ):
-    statement = select(Post).where(Post.id == post_id)
+    statement = select(
+        User.name.label("author"),
+        Post.title,
+        Post.content
+    ).join(
+        Post,
+        Post.author_id == User.id
+    ).where(
+        Post.id == post_id
+    )
     post = session.exec(statement).first()
     
     if post is None:
         raise HTTPException(
             status_code=404,
-            detail="There is no post exist with this number"
+            detail="Post not found"
         )
+
+    return {
+            "author": post.author,
+            "title": post.title,
+            "content": post.content
+        }
     
-    return post
 
 
 # ! update post
-@router.patch("/{post_id}")
+@router.patch("/{post_id}", response_model=UpdatePostResponse)
 def update_post(
     post_id: int,
     data: UpdatePost,
@@ -120,18 +136,20 @@ def update_post(
 
 
 # ! Delete Post
-@router.delete("/{post_id}")
+@router.delete("/{post_id}", response_model=DeletePostResponse)
 def delete_post(
     post_id: int,
     current_user: User = Depends(get_user),
     session: Session = Depends(get_session)
 ):
+    print(post_id)
     statement = select(Post).where(
         Post.id == post_id, 
         Post.author_id == current_user.id
     )
     
     post = session.exec(statement).first()
+    print(post)
     
     if post is None:
         raise HTTPException(

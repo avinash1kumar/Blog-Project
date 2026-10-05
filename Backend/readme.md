@@ -64,37 +64,34 @@ The API provides user authentication, profile management, and complete blog post
 
 ## 📁 Project Structure
 
-```text
-Blog Project/
+Backend/
 │
-├── Backend/
-│   │
-│   ├── model/
-│   │   ├── user.py
-│   │   └── posts.py
-│   │
-│   ├── schema/
-│   │   ├── signup_user.py
-│   │   ├── login_user.py
-│   │   ├── update_user.py
-│   │   ├── post_data.py
-│   │   └── update_post.py
-│   │
-│   ├── response_schema/
-│   │   ├── user_routes_schemas.py
-│   │   └── post_routes_schemas.py
-│   │
-│   ├── routes/
-│   │   ├── user_routes.py
-│   │   └── post_routes.py
-│   │
-│   ├── utils/
-│   │   └── security.py
-│   │
-│   ├── db.py
-│   ├── main.py
-│   ├── .env
-│   ├── requirements.txt
-│   └── README.md
+├── model/
+│   ├── user.py
+│   └── posts.py
 │
-└── ...
+├── schema/
+│   ├── signup_user.py
+│   ├── login_user.py
+│   ├── update_user.py
+│   ├── post_data.py
+│   └── update_post.py
+│
+├── response_schema/
+│   ├── user_routes_schemas.py
+│   └── post_routes_schemas.py
+│
+├── routes/
+│   ├── user_routes.py
+│   └── post_routes.py
+│
+├── utils/
+│   └── security.py
+│
+├── db.py
+├── main.py
+├── .env.example
+├── .gitignore
+├── requirements.txt
+└── README.md
+

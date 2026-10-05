@@ -63,7 +63,7 @@ The API provides user authentication, profile management, and complete blog post
 ---
 
 ## 📁 Project Structure
-
+```
 Backend/
 │
 ├── model/
@@ -94,4 +94,125 @@ Backend/
 ├── .gitignore
 ├── requirements.txt
 └── README.md
+```
+---
 
+## 🔐 Authentication Flow
+- The API uses JWT-based authentication.
+
+### Signup
+```
+Client
+   ↓
+POST /auth/signup
+   ↓
+Validate user data
+   ↓
+Hash password
+   ↓
+Store user in MySQL
+   ↓
+Return user information
+```
+
+### Login
+```
+Client
+   ↓
+POST /auth/login
+   ↓
+Verify email and password
+   ↓
+Create JWT
+   ↓
+Return access token
+```
+
+---
+
+## 🔒 Security
+
+The project implements several basic backend security practices:
+
+- Passwords are hashed before database storage.
+- Password hashes are never returned in API responses.
+- JWT tokens are used for authentication.
+- JWT tokens have an expiration time.
+- Protected endpoints require authentication.
+- Users cannot modify another user's posts.
+- Users cannot delete another user's posts.
+- Sensitive configuration is stored using environment variables.
+- User input is validated using Pydantic.
+
+---
+
+---
+
+## 📌 API Endpoints
+
+### Authentication & User
+
+| Method | Endpoint | Description | Authentication |
+|--------|----------|-------------|----------------|
+| POST | `/auth/signup` | Create a new user | ❌ |
+| POST | `/auth/login` | Login and receive JWT token | ❌ |
+| GET | `/auth/profile` | Get current user profile | ✅ |
+| PATCH | `/auth/profile` | Update current user profile | ✅ |
+| DELETE | `/auth/profile` | Delete current user account | ✅ |
+
+### Blog Posts
+
+| Method | Endpoint | Description | Authentication |
+|--------|----------|-------------|----------------|
+| POST | `/posts` | Create a new blog post | ✅ |
+| GET | `/posts` | Get all blog posts | ✅ |
+| GET | `/posts/{post_id}` | Get a single blog post | ✅ |
+| PATCH | `/posts/{post_id}` | Update your own blog post | ✅ |
+| DELETE | `/posts/{post_id}` | Delete your own blog post | ✅ |
+
+
+---
+
+## 📚 API Documentation
+
+FastAPI automatically provides interactive API documentation using Swagger UI.
+
+Run the application and open:
+
+http://127.0.0.1:8000/docs
+
+---
+
+## Testing
+
+The API has been manually tested using FastAPI Swagger UI.
+
+Automated API testing using pytest is planned as a future improvement.
+
+## 🐳 Docker
+
+Dockerization is not currently implemented.
+
+Docker and Docker Compose are planned as future improvements.
+
+---
+
+## 🔮 Future Improvements
+
+- [ ] Automated API testing with pytest
+- [ ] Dockerization
+- [ ] Database migrations with Alembic
+- [ ] Refresh tokens
+- [ ] Password reset
+- [ ] Email verification
+- [ ] Pagination
+- [ ] Search and filtering
+- [ ] Deployment
+
+---
+
+## 👨‍💻 Author
+
+**Avinash Kumar**
+
+Python Backend Developer
